@@ -14,6 +14,10 @@ namespace week04
     {
         public Form1()
         {
+            RealEstateEntities context = new RealEstateEntities();
+            List<Flat> flats;
+
+            
             InitializeComponent();
         }
     }
