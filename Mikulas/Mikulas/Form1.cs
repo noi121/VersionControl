@@ -10,11 +10,14 @@ namespace Mikulas
     {
         private List<Toy> _toys = new List<Toy>();
         private IToyFactory _factory;
+        private Toy next;
 
         public IToyFactory Factory
         {
             get { return _factory; }
-            set { _factory = value; }
+            set { _factory = value;
+                DisplayNext();
+            }
         }
 
 
@@ -51,6 +54,28 @@ namespace Mikulas
                 mainPanel.Controls.Remove(oldest);
                 _toys.Remove(oldest);
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Factory = new CarFactory();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Factory = new BallFactory();
+        }
+
+        private void DisplayNext()
+        {
+            if (next != null)
+            {
+                Controls.Remove(next);
+            }
+            next = Factory.CreateNew();
+            next.Left = label1.Left;
+            next.Top = label1.Top + 20;
+            Controls.Add(next);
         }
     }
 }
