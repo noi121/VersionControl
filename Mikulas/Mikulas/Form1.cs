@@ -93,5 +93,15 @@ namespace Mikulas
             }
             button.BackColor = picker.Color;
         }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            Factory = new PresentFactory()
+            {
+                RibbonColor = button6.BackColor,
+                BoxColor = button4.BackColor
+            };
+
+        }
     }
 }
