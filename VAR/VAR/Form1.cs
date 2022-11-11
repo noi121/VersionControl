@@ -18,7 +18,8 @@ namespace VAR
         List<Tick> Ticks;
 
         List<PortfolioItem> Portfolio = new List<PortfolioItem>();
-        List<decimal> Rendezve = new List<decimal>();
+        //List<decimal> Rendezve = new List<decimal>();
+        List<decimal> Nyereségek = new List<decimal>();
         public Form1()
         {
             InitializeComponent();
@@ -26,7 +27,7 @@ namespace VAR
             dataGridView1.DataSource = Ticks;
             CreatePortfolio();
 
-            List<decimal> Nyereségek = new List<decimal>();
+            
             int intervallum = 30;
             DateTime kezdoDatum = (from x in Ticks select x.TradingDay).Min();
             DateTime vegDatum = new DateTime(2016, 12, 30);
@@ -38,7 +39,7 @@ namespace VAR
                 Console.WriteLine(i + " " + ny);
             }
             var nyeresegRendezve = (from x in Nyereségek orderby x select x).ToList();
-            Rendezve = nyeresegRendezve;
+            //Rendezve = nyeresegRendezve;
             MessageBox.Show(nyeresegRendezve[nyeresegRendezve.Count() / 5].ToString());   
         }
 
@@ -76,7 +77,7 @@ namespace VAR
             {
                 sw.WriteLine("Időszak" + ";" + "Nyereség");
                 int counter = 1;
-                foreach (var n in Rendezve)
+                foreach (var n in Nyereségek)
                 {
                     sw.WriteLine(counter + ";" + n.ToString());
                     counter++;
