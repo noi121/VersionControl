@@ -18,6 +18,7 @@ namespace VAR
         List<Tick> Ticks;
 
         List<PortfolioItem> Portfolio = new List<PortfolioItem>();
+        List<decimal> Rendezve = new List<decimal>();
         public Form1()
         {
             InitializeComponent();
@@ -37,26 +38,8 @@ namespace VAR
                 Console.WriteLine(i + " " + ny);
             }
             var nyeresegRendezve = (from x in Nyereségek orderby x select x).ToList();
-            MessageBox.Show(nyeresegRendezve[nyeresegRendezve.Count() / 5].ToString());
-
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.DefaultExt = "csv";
-            sfd.AddExtension = true;
-            if (sfd.ShowDialog() != DialogResult.OK)
-            {
-                return;
-            }
-
-            using (StreamWriter sw = new StreamWriter(sfd.FileName, false, Encoding.UTF8))
-            {
-                sw.WriteLine("Időszak" + "\t" + "Nyereség");
-                int counter = 1;
-                foreach (var n in nyeresegRendezve)
-                {
-                    sw.WriteLine(counter + "\t" + n.ToString());
-                    counter++;
-                }
-            }    
+            Rendezve = nyeresegRendezve;
+            MessageBox.Show(nyeresegRendezve[nyeresegRendezve.Count() / 5].ToString());   
         }
 
         private void CreatePortfolio()
@@ -77,6 +60,33 @@ namespace VAR
                 value += (decimal)last.Price * p.Volume;
             }
             return value;
+        }
+
+        private void SaveFile()
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.DefaultExt = "csv";
+            sfd.AddExtension = true;
+            if (sfd.ShowDialog() != DialogResult.OK)
+            {
+                return;
+            }
+
+            using (StreamWriter sw = new StreamWriter(sfd.FileName, false, Encoding.UTF8))
+            {
+                sw.WriteLine("Időszak" + ";" + "Nyereség");
+                int counter = 1;
+                foreach (var n in Rendezve)
+                {
+                    sw.WriteLine(counter + ";" + n.ToString());
+                    counter++;
+                }
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SaveFile();
         }
     }
 }
