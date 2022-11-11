@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,6 +38,25 @@ namespace VAR
             }
             var nyeresegRendezve = (from x in Nyereségek orderby x select x).ToList();
             MessageBox.Show(nyeresegRendezve[nyeresegRendezve.Count() / 5].ToString());
+
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.DefaultExt = "csv";
+            sfd.AddExtension = true;
+            if (sfd.ShowDialog() != DialogResult.OK)
+            {
+                return;
+            }
+
+            using (StreamWriter sw = new StreamWriter(sfd.FileName, false, Encoding.UTF8))
+            {
+                sw.WriteLine("Időszak" + "\t" + "Nyereség");
+                int counter = 1;
+                foreach (var n in nyeresegRendezve)
+                {
+                    sw.WriteLine(counter + "\t" + n.ToString());
+                    counter++;
+                }
+            }    
         }
 
         private void CreatePortfolio()
