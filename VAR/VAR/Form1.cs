@@ -33,5 +33,16 @@ namespace VAR
 
             dataGridView2.DataSource = Portfolio;
         }
+
+        private decimal GetPortfolioValue(DateTime date)
+        {
+            decimal value = 0;
+            foreach (var p in Portfolio)
+            {
+                var last = (from x in Ticks where p.Index == x.Index.Trim() && date <= x.TradingDay select x).First();
+                value += (decimal)last.Price * p.Volume;
+            }
+            return value;
+        }
     }
 }
