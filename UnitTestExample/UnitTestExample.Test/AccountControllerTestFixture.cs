@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
+using System.Activities;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,6 +38,43 @@ namespace UnitTestExample.Test
             var accountController = new AccountController();
             var result = accountController.ValidatePassword(password);
             Assert.AreEqual(expectedResult, result);
+        }
+
+        [
+            Test,
+            TestCase("irf@uni-corvinus.hu", "Abcd1234"),
+            TestCase("kkk@mesemaci.com", "kukucska23L"),
+        ]
+        public void TestRegisterHappyPath(string email, string password)
+        {
+            var accountController = new AccountController();
+            var result = accountController.Register(email, password);
+            Assert.AreEqual(email, result.Email);
+            Assert.AreEqual(email, result.Password);
+            Assert.AreNotEqual(Guid.Empty, result.ID);
+        }
+
+        [
+            Test,
+            TestCase("kiskutya@gomolyfelso", "246AGZlll"),
+            TestCase("heshtag@macskaszor.hu", "nem"),
+            TestCase("szarazteszta@marhabor-com", "Abrakadabra83"),
+            TestCase("hagyjbekenmostmar.hu", "nemfoglakH2"),
+            TestCase("@kecskebeka.com", "Tancitanci00")
+        ]
+        public void TestRegisterValidateException(string email, string password)
+        {
+            var accountController = new AccountController();
+
+            try
+            {
+                var actualResult = accountController.Register(email, password);
+                Assert.Fail();
+            }
+            catch (Exception ex)
+            {
+                Assert.IsInstanceOf<ValidationException>(ex);
+            }
         }
     }
 }
