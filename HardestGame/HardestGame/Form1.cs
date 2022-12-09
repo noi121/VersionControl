@@ -15,11 +15,38 @@ namespace HardestGame
     {
         GameController gc = new GameController();
         GameArea ga;
+
+        int popSize = 100;
+        int numberOfSteps = 10;
+        int numberOfStepsIncrement = 10;
+        int generation = 1;
         public Form1()
         {
             InitializeComponent();
             ga = gc.ActivateDisplay();
             this.Controls.Add(ga);
+            //gc.AddPlayer();
+            //gc.Start(true);
+
+            for (int i = 0; i < popSize; i++)
+            {
+                gc.AddPlayer(numberOfSteps);
+            }
+
+            gc.GameOver += Gc_GameOver;
+
+            gc.Start();
+            
+        }
+
+        private void Gc_GameOver(object sender)
+        {
+            generation++;
+            label1.Text = string.Format("{0}. generáció", generation);
+            var playerList = from p in gc.GetCurrentPlayers()
+                             orderby p.GetFitness() descending
+                             select p;
+            var topPerformers = playerList.Take(popSize / 2).ToList();
         }
     }
 }
