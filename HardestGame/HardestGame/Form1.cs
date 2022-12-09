@@ -16,6 +16,8 @@ namespace HardestGame
         GameController gc = new GameController();
         GameArea ga;
 
+        Brain winner = null;
+
         int popSize = 100;
         int numberOfSteps = 10;
         int numberOfStepsIncrement = 10;
@@ -28,14 +30,16 @@ namespace HardestGame
             //gc.AddPlayer();
             //gc.Start(true);
 
+            gc.GameOver += Gc_GameOver;
+
             for (int i = 0; i < popSize; i++)
             {
                 gc.AddPlayer(numberOfSteps);
             }
 
-            gc.GameOver += Gc_GameOver;
-
             gc.Start();
+
+            
             
         }
 
@@ -47,6 +51,44 @@ namespace HardestGame
                              orderby p.GetFitness() descending
                              select p;
             var topPerformers = playerList.Take(popSize / 2).ToList();
+
+            gc.ResetCurrentLevel();
+            foreach (var p in topPerformers)
+            {
+                var b = p.Brain.Clone();
+                if (generation % 3 == 0)
+                    gc.AddPlayer(b.ExpandBrain(numberOfStepsIncrement));
+                else
+                    gc.AddPlayer(b);
+
+                if (generation % 3 == 0)
+                    gc.AddPlayer(b.Mutate().ExpandBrain(numberOfStepsIncrement));
+                else
+                    gc.AddPlayer(b.Mutate());
+            }
+
+            var winners = from p in topPerformers
+                          where p.IsWinner
+                          select p;
+
+            if (winners.Count() > 0)
+            {
+                winner = winners.FirstOrDefault().Brain.Clone();
+                button1.Visible = true;
+                gc.GameOver -= Gc_GameOver;
+                return;
+            }
+
+            gc.Start();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            gc.ResetCurrentLevel();
+            gc.AddPlayer(winner.Clone());
+            gc.AddPlayer();
+            ga.Focus();
+            gc.Start(true);
         }
     }
 }
